@@ -1,0 +1,103 @@
+<head>
+    <body>
+        <h1>Build form</h1>
+        <div>
+            
+            <label>Select type:</label>
+            <select id="newFieldType" onchange="showOption()">
+                <option value="text" selected>Text</option>
+                <option value="select">Select</option>
+            </select>
+            <br><br>
+            <div id="textField"></div>
+            <label>Field name:</label>
+            <input id="fieldName" type="text">
+            <div id="selectOptions" hidden>
+                <label id="selectOptionsLabel">Options :</label>
+                <input type="text" id="selectOptionsText" placeholder="Use ',' to seperate options">
+            </div>
+            <button onclick="addList()">Add</button> 
+        </div>
+        <br>
+        <div>
+            <ul id="fieldList">
+
+            </ul>
+
+            <button onclick="makeTable()">Make table</button>
+
+            
+        </div> 
+        <br> <br> <br> 
+        <div>
+            <table id="fieldTable">
+               
+            </table>
+        </div>     
+    </body>
+    <script>
+
+        function showOption(){
+            let element = document.getElementById("newFieldType");
+            if(element.value=="text"){
+                document.getElementById("selectOptions").style.display = "none";
+            }
+            else if(element.value=="select"){
+                document.getElementById("selectOptions").style.display = "block";            
+            }
+        }
+        
+        function addList(){
+            let i=0;
+            let field=document.getElementById("fieldName").value;
+            let x = document.createElement("LI");  
+            let t = document.getElementById("newFieldType").value;
+            if(t=="text"){
+                x.innerHTML=field+ '<input id="fieldName" type="text"><button onclick="removeList(this)">Remove</button>';
+                document.getElementById("fieldList").appendChild(x);  
+            }
+            if(t=="select"){
+                text=field+'<select>';
+                str=document.getElementById("selectOptionsText").value.split(",");
+                for(i=0;i<str.length;i++){
+                    text=text+'<option value="'+str[i]+'">'+str[i]+'</option>';
+                }
+                text=text+'</select><button onclick="removeList(this)">Remove</button>';
+                x.innerHTML=text;               
+                document.getElementById("fieldList").appendChild(x);
+
+            }
+       
+            document.getElementById("fieldName").value="";
+            document.getElementById("selectOptionsText").value="";
+        }
+        
+        function removeList(element){
+            element.parentElement.remove();
+        }
+        
+        refresh = 0;
+        function makeTable(){
+
+            let table = document.getElementById("fieldTable");
+
+            if(refresh!=0){
+                table.childNodes[1].remove();
+            }
+
+            let length = document.getElementById("fieldList").getElementsByTagName("li").length;
+            let content = document.getElementById("fieldList").childNodes;
+
+            let header = table.createTHead();
+            let row0 = header.insertRow(0);
+            let row1 = table.insertRow(1);
+            
+            for(let i=0; i<length; i++){
+                row0.insertCell(i).innerHTML = content[i+1].innerHTML.split("<")[0];
+                row1.insertCell(i).innerHTML = content[i+1].childNodes[1].value;
+            }
+            refresh++;
+        }
+
+    </script>
+</head>
